@@ -4,6 +4,7 @@ const {test, expect} = require('@playwright/test');
 const name = "rahulshettyacademy";
 const password = "learning";
 test('home/landing page test', async ({page}) => {
+    const cardTitles = page.locator(".card-body a");
     const userName = page.locator("#username");
     const Userpassword = page.locator("[type='password']");
     const signIn = page.locator("#signInBtn");
@@ -14,12 +15,11 @@ test('home/landing page test', async ({page}) => {
     await page.locator("#terms").check();
     await expect(page.locator("#terms")).toBeChecked();
     await signIn.click();
-    console.log(await page.locator(".card-body a").nth(0).textContent());
-    console.log(await page.locator(".card-body a").nth(2).textContent());
-    console.log(await page.locator(".card-body a").first().textContent());
-    console.log(await page.locator(".card-body a").nth(1).textContent());
-    console.log(await page.locator(".card-body a").last().textContent());
-
+    console.log(await cardTitles.nth(0).textContent());
+    console.log(await cardTitles.nth(2).textContent());
+    console.log(await cardTitles.first().textContent());
+    console.log(await cardTitles.nth(1).textContent());
+    console.log(await cardTitles.last().textContent());
 
     await page.pause();
 
