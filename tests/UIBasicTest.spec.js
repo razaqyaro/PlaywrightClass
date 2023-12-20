@@ -21,6 +21,10 @@ test('home/landing page test', async ({page}) => {
     console.log(await cardTitles.nth(1).textContent());
     console.log(await cardTitles.last().textContent());
 
+    // grab all the title 
+    const allTitles = await cardTitles.allTextContents();  // returns array of the texts
+    console.log(allTitles);
+
     await page.pause();
 
  

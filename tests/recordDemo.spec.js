@@ -13,3 +13,20 @@ test('Abdul testing the code generating', async ({ page }) => {
   await page.getByLabel('Switch between dark and light').click();
   await page.getByRole('link', { name: 'Docs' }).click();
 });
+
+/**
+ * If ID is present 
+ * css -> tagName#id (or) #id
+ * 
+ * If class attribute is present
+ * css -> tagName.class (or) .class
+ * 
+ * Write css based on any Attribute
+ * css -> [attribute='value']
+ * 
+ * Write css with transversing from Parent to child
+ * css -> parentTagName >> childTagName
+ * 
+ * If needs to write the locator based on text
+ * text = ''
+ */
