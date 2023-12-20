@@ -5,6 +5,7 @@ test("Dropdown test", async({page}) => {
     await page.goto("https://rahulshettyacademy.com/loginpagePractise");
     await page.setViewportSize({width: 1080, height:1920 });
     const userName = page.locator("#username");
+    const link = page.locator("[href*='documents-request']");
     const Userpassword = page.locator("[type='password']");
     const signIn = page.locator("#signInBtn");
     const dropdown =  await page.locator("select.form-control");
@@ -18,7 +19,10 @@ test("Dropdown test", async({page}) => {
     expect(await page.locator("#terms")).toBeChecked();
     await page.locator("#terms").uncheck();
     expect(await page.locator("#terms").isChecked()).toBeFalsy();
-    console.log(await page.locator("#terms").isChecked())
+    console.log(await page.locator("#terms").isChecked());
+    await expect(link).toHaveAttribute("class", "blinkingText");
   //  okayButton.click();
     await page.pause();
 });
+
+
