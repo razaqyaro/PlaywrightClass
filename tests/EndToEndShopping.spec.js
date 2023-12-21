@@ -1,4 +1,3 @@
-// @ts-check
 const {test, expect} = require('@playwright/test');
 
 test("Find Products and shop", async ({page}) =>
@@ -20,11 +19,28 @@ test("Find Products and shop", async ({page}) =>
        if(foundItems == productName)
        {
        // await products.nth(i).locator("[class='fa fa-shopping-cart']").click();
-        await page.locator('button:nth-child(4)').first().click();
-        break;
+            await page.locator('button:nth-child(4)').first().click();
+            break;
        }
    }
    await page.locator("[routerlink='/dashboard/cart']").click();
+   await page.locator("li[class='items even ng-star-inserted']").waitFor();
+   const bool = await page.locator("h3:has-text('I Phone')").isVisible();
+   expect(bool).toBeTruthy();
+   console.log(bool);
    await page.getByRole('button', { name: 'Checkout❯' }).click();
-   await page.pause();
+   await page.locator("[placeholder='Select Country']").pressSequentially("Gha");
+   const dropdown =  page.locator(".ta-results")
+   await dropdown.waitFor();
+   const optionsCount = await dropdown.locator("button").count();
+   for(let i = 0; i < optionsCount; i++)
+   {
+    let text = await dropdown.locator("button").nth(i).textContent();
+    if(text.trim() == "Ghana")
+    {
+        await dropdown.locator("button").nth(i).click();
+        break;
+    }
+   }
+await page.pause();
 });
