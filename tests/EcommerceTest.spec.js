@@ -1,7 +1,7 @@
 // @ts-check
 const {test, expect} = require('@playwright/test');
 
-test.only("Validate Login test", async ({page}) => {
+test("Validate Login test", async ({page}) => {
     await page.goto("https://rahulshettyacademy.com/client");
     await page.locator("#userEmail").fill("razaqyaro@gmail.com");
     await page.locator("#userPassword").fill("razzy1234$Y");
