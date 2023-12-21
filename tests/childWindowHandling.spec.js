@@ -21,7 +21,6 @@ test("Child window handle", async ({browser}) => {
     console.log(domain);
     const userName = domain.split(".")[0];
     await page.locator("#username").fill(userName);
-    await page.pause();
 });
 
 
