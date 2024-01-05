@@ -1,16 +1,42 @@
-import {test, expect} from '@playwright/test';
+import {test, expect, request} from '@playwright/test';
 
-test("Find Products and shop", async ({page}) =>
- {
-    const userEmail = "razaqyaro@gmail.com";
-    const productName = "I Phone";
+const loginPayload = {
+    userEmail: "razaqyaro@gmail.com",
+    userPassword: "razzy1234$Y"
+}
+let token;
+test.beforeAll(async () => 
+{
+    const apiContext = await request.newContext();
+    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
+    {
+        data : loginPayload
+    })
+    expect((loginResponse).ok()).toBeTruthy();
+    const loginResponseJson = await loginResponse.json();
+    token =  loginResponseJson.token;
+    console.log(token)
+});
+test("Hi", async ({page}) => {
+
+});
+
+test.only("Login with API call", async ({page}) => 
+{
+    
+//     await page.goto("https://rahulshettyacademy.com/client");
+//     await page.locator("#userEmail").fill("razaqyaro@gmail.com");
+//     await page.locator("#userPassword").fill("razzy1234$Y");
+//     await page.locator("[value='Login']").click();
+//    // await page.locator(".card-body h5").first().waitFor();
+//     await page.waitForLoadState('networkidle');
+page.addInitScript(value => {
+    window.localStorage.setItem('token', value)
+}, token);
+    const userEmail = "";
+    const productName = "Zara Coat 3";
+    await page.goto("https://rahulshettyacademy.com/client/");
     const products = page.locator(".card-body");
-    await page.goto("https://rahulshettyacademy.com/client");
-    await page.locator("#userEmail").fill("razaqyaro@gmail.com");
-    await page.locator("#userPassword").fill("razzy1234$Y");
-    await page.locator("[value='Login']").click();
-    await page.locator(".card-body h5").first().waitFor();
-    //await page.waitForLoadState('networkidle');
     const allTitles = await page.locator(".card-body h5").allTextContents();
     console.log(allTitles);
    const countOfItems = await products.count();
@@ -26,7 +52,7 @@ test("Find Products and shop", async ({page}) =>
    }
    await page.locator("[routerlink='/dashboard/cart']").click();
    //await page.locator("li[class='items even ng-star-inserted']").waitFor();
-   const bool = await page.locator("h3:has-text('IPhone 13 Pro')").isVisible();
+   const bool = await page.locator("h3:has-text('Zara Coat 3')").isVisible();
    expect(bool).toBeTruthy();
    console.log(bool);
    await page.getByRole('button', { name: 'Checkout❯' }).click();
@@ -69,4 +95,5 @@ test("Find Products and shop", async ({page}) =>
   const orderDetails = await page.locator(".col-text").textContent();
   console.log(orderDetails)
   expect(orderIdString.includes(orderDetails)).toBeTruthy();
+
 });

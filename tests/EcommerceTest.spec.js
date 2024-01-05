@@ -1,5 +1,5 @@
-// @ts-check
-const {test, expect} = require('@playwright/test');
+//@ts-check
+import {test, expect} from '@playwright/test';
 
 test("Validate Login test", async ({page}) => {
     await page.goto("https://rahulshettyacademy.com/client");
