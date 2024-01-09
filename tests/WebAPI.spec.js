@@ -4,7 +4,16 @@ const loginPayload = {
     userEmail: "razaqyaro@gmail.com",
     userPassword: "razzy1234$Y"
 }
+const orderPayload = {
+    "orders": [
+      {
+        country: "Cuba",
+        productOrderedId: "6581ca399fd99c85e8ee7f45"
+      }
+    ]
+  }
 let token;
+let orderId;
 test.beforeAll(async () => 
 {
     const apiContext = await request.newContext();
@@ -16,23 +25,31 @@ test.beforeAll(async () =>
     const loginResponseJson = await loginResponse.json();
     token =  loginResponseJson.token;
     console.log(token)
-});
+
+    const orderResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order", 
+    {
+        data: orderPayload,
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        }
+    });
+    const orderResponseJson = await orderResponse.json();
+    console.log(orderResponseJson)
+    orderId =  orderResponseJson.orders[0];
+    console.log(orderId);
+
+}); 
 test("Hi", async ({page}) => {
 
 });
 
-test.only("Login with API call", async ({page}) => 
+test("Login with API call", async ({page}) => 
 {
-    
-//     await page.goto("https://rahulshettyacademy.com/client");
-//     await page.locator("#userEmail").fill("razaqyaro@gmail.com");
-//     await page.locator("#userPassword").fill("razzy1234$Y");
-//     await page.locator("[value='Login']").click();
-//    // await page.locator(".card-body h5").first().waitFor();
-//     await page.waitForLoadState('networkidle');
-page.addInitScript(value => {
-    window.localStorage.setItem('token', value)
-}, token);
+
+    page.addInitScript(value => {
+        window.localStorage.setItem('token', value)
+    }, token);
     const userEmail = "";
     const productName = "Zara Coat 3";
     await page.goto("https://rahulshettyacademy.com/client/");
@@ -97,3 +114,31 @@ page.addInitScript(value => {
   expect(orderIdString.includes(orderDetails)).toBeTruthy();
 
 });
+
+test.only('Place order', async ({page}) =>
+{
+    page.addInitScript(value => {
+        window.localStorage.setItem('token', value)
+    }, token);
+
+    await page.goto("https://rahulshettyacademy.com/client/");
+    await page.locator("button[routerlink*='myorders']").click();
+    await page.locator("tbody").waitFor();
+    //const rows = await page.locator("tbody tr");
+    await page.locator("tbody").waitFor();
+    const rows =  page.locator("tbody tr");
+    
+    for(let i = 0; i < await rows.count(); i++)
+    {
+     const rowOrderID = await rows.nth(i).locator("th").textContent();
+     if(orderId.includes(rowOrderID))
+     {
+         await rows.nth(i).locator("button").first().click()
+         console.log(rowOrderID);
+         console.log(orderId)
+         break;
+     }
+ 
+    }
+    console.log("Successfull")
+})
