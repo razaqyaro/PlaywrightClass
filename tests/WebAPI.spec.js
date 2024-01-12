@@ -1,5 +1,8 @@
 import {test, expect, request} from '@playwright/test';
+const {APIUtils} = require('./utils/APIUtils');
 
+let token;
+let response;
 const loginPayload = {
     userEmail: "razaqyaro@gmail.com",
     userPassword: "razzy1234$Y"
@@ -12,44 +15,21 @@ const orderPayload = {
       }
     ]
   }
-let token;
-let orderId;
+
 test.beforeAll(async () => 
 {
-    const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
-    {
-        data : loginPayload
-    })
-    expect((loginResponse).ok()).toBeTruthy();
-    const loginResponseJson = await loginResponse.json();
-    token =  loginResponseJson.token;
-    console.log(token)
-
-    const orderResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order", 
-    {
-        data: orderPayload,
-        headers: {
-            'Authorization': token,
-            'Content-Type': 'application/json'
-        }
-    });
-    const orderResponseJson = await orderResponse.json();
-    console.log(orderResponseJson)
-    orderId =  orderResponseJson.orders[0];
-    console.log(orderId);
+   const apiContext = await request.newContext();
+   const apiUtils = new APIUtils(apiContext, loginPayload);
+   response = await apiUtils.createOrder(orderPayload);
 
 }); 
-test("Hi", async ({page}) => {
-
-});
 
 test("Login with API call", async ({page}) => 
 {
 
     page.addInitScript(value => {
         window.localStorage.setItem('token', value)
-    }, token);
+    }, response.token);
     const userEmail = "";
     const productName = "Zara Coat 3";
     await page.goto("https://rahulshettyacademy.com/client/");
@@ -119,7 +99,7 @@ test.only('Place order', async ({page}) =>
 {
     page.addInitScript(value => {
         window.localStorage.setItem('token', value)
-    }, token);
+    }, response.token);
 
     await page.goto("https://rahulshettyacademy.com/client/");
     await page.locator("button[routerlink*='myorders']").click();
@@ -131,11 +111,11 @@ test.only('Place order', async ({page}) =>
     for(let i = 0; i < await rows.count(); i++)
     {
      const rowOrderID = await rows.nth(i).locator("th").textContent();
-     if(orderId.includes(rowOrderID))
+     if(response.orderId.includes(rowOrderID))
      {
          await rows.nth(i).locator("button").first().click()
          console.log(rowOrderID);
-         console.log(orderId)
+         console.log(response.orderId)
          break;
      }
  
