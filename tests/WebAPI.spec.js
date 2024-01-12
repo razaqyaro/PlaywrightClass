@@ -10,7 +10,7 @@ const loginPayload = {
 const orderPayload = {
     "orders": [
       {
-        country: "Cuba",
+        country: "Ghana",
         productOrderedId: "6581ca399fd99c85e8ee7f45"
       }
     ]
